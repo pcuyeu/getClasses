@@ -19,8 +19,6 @@ page_to_scrape = webdriver.Chrome(service=browser_driver, options = options)
 page_to_scrape.implicitly_wait(10)  
 page_to_scrape.get("<class website>")
 
-start = time.time()
-
 ignore_list = [ElementNotVisibleException, ElementNotSelectableException]
 wait = WebDriverWait(page_to_scrape, timeout = 12, poll_frequency= 3, ignored_exceptions= ignore_list)
 
@@ -100,8 +98,6 @@ else:
         else:
             if (len(all_seats) - 1) == counter:
                 print("All seats are taken or the end of list has been reached.")
-                end = time.time()
-                print("The time of execution of above program is :", (end-start) * 10**3, "ms")
                 break
             else:
                 # pop is used remove the full classes from each list
