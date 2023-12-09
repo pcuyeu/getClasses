@@ -9,21 +9,29 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import (ElementNotVisibleException,ElementNotSelectableException)
 from selenium.webdriver.chrome.options import Options
 import time
+# NEW 
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
-# Web browser opens in the background
-options = Options()
-options.headless = True
-# Points to browser executable and goes to web page specified
-browser_driver = Service('<point to your chrome executable on your device>')
-page_to_scrape = webdriver.Chrome(service=browser_driver, options = options)
-page_to_scrape.implicitly_wait(10)  
-page_to_scrape.get("<class website>")
+##### NEW ADDITIONS TO SELENIUM #####:
+
+# https://www.selenium.dev/blog/2023/headless-is-going-away/
+# ^(HEADLESS OPTION FOR SELENIUM)
+
+# Selenium v4.6.0 includes built in Manager. No need to use a third party library
+# (WebDriverManager). 
+
+
+###########################################
+page_to_scrape = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+page_to_scrape.get("https://catalog.apps.asu.edu/catalog/classes")
+time.sleep(5)
 
 ignore_list = [ElementNotVisibleException, ElementNotSelectableException]
 wait = WebDriverWait(page_to_scrape, timeout = 12, poll_frequency= 3, ignored_exceptions= ignore_list)
 
 # efficient way of waiting for web page to load.
-wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
+#wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
 
 # BUTTON FOR ADDITIONAL OPTIONS
 moreOptions = page_to_scrape.find_element(By.LINK_TEXT, "Advanced Search")
@@ -47,17 +55,22 @@ time.sleep(1)
 number.send_keys("310")
 time.sleep(1)
 keyword_search.send_keys("")
-
-
-# RADIO BUTTON TO SEARCH FOR ALL CLASSES 
-open_classes_btn = page_to_scrape.find_element(By.ID, "search-all")
-open_classes_btn.click()
 time.sleep(1)
+
+# consent statment for website to use cookies 
+consent_banner = page_to_scrape.find_element(By.CLASS_NAME, "uds-cookie-consent-faux-close-btn")
+consent_banner.click()
+time.sleep(3)
+
+# RADIO BUTTON TO SEARCH FOR ALL CLASSES  
+#open_classes_btn = page_to_scrape.find_element(By.ID, "search-all")
+#open_classes_btn.click()
+#time.sleep(3)
 
 # CLICK ON SEARCH BUTTON
-search_btn = page_to_scrape.find_element(By.ID, "search-button")
-search_btn.click()
-time.sleep(1)
+search_button = page_to_scrape.find_element(By.ID, "search-button")
+search_button.click()
+time.sleep(3)
 
 #################### PAGE WITH WANTED DATA ####################
 
