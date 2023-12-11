@@ -16,16 +16,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 
 
-##### NEW ADDITIONS TO SELENIUM #####:
-
-# https://www.selenium.dev/blog/2023/headless-is-going-away/
-# ^(TITLE OF ARTICLE IS A JOKE... NEW HEADLESS OPTION FOR SELENIUM)
-
-# Selenium v4.6.0 includes built in Manager. No need to use a third party library
-# (WebDriverManager). 
-
-###########################################
-
 # headless mode (makes browser window not visible to the user)
 options = Options()
 options.add_argument("--headless=new")
@@ -37,9 +27,6 @@ page_to_scrape.maximize_window() # maximize window
 
 ignore_list = [ElementNotVisibleException, ElementNotSelectableException]
 wait = WebDriverWait(page_to_scrape, timeout = 12, poll_frequency= 3, ignored_exceptions= ignore_list)
-
-# efficient way of waiting for web page to load.
-#wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
 
 # clear Cookie banner 
 consent_banner = page_to_scrape.find_element(By.CLASS_NAME, "uds-cookie-consent-faux-close-btn")
