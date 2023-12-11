@@ -16,7 +16,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 ##### NEW ADDITIONS TO SELENIUM #####:
 
 # https://www.selenium.dev/blog/2023/headless-is-going-away/
-# ^(HEADLESS OPTION FOR SELENIUM)
+# ^(TITLE OF ARTICLE IS A JOKE... NEW HEADLESS OPTION FOR SELENIUM)
 
 # Selenium v4.6.0 includes built in Manager. No need to use a third party library
 # (WebDriverManager). 
@@ -27,11 +27,18 @@ page_to_scrape = webdriver.Chrome(service=ChromeService(ChromeDriverManager().in
 page_to_scrape.get("https://catalog.apps.asu.edu/catalog/classes")
 time.sleep(5)
 
+page_to_scrape.maximize_window() # maximize window
+
 ignore_list = [ElementNotVisibleException, ElementNotSelectableException]
 wait = WebDriverWait(page_to_scrape, timeout = 12, poll_frequency= 3, ignored_exceptions= ignore_list)
 
 # efficient way of waiting for web page to load.
 #wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
+
+# Cookie banner 
+consent_banner = page_to_scrape.find_element(By.CLASS_NAME, "uds-cookie-consent-faux-close-btn")
+consent_banner.click()
+time.sleep(3)
 
 # BUTTON FOR ADDITIONAL OPTIONS
 moreOptions = page_to_scrape.find_element(By.LINK_TEXT, "Advanced Search")
@@ -57,9 +64,11 @@ time.sleep(1)
 keyword_search.send_keys("")
 time.sleep(1)
 
-# consent statment for website to use cookies 
-consent_banner = page_to_scrape.find_element(By.CLASS_NAME, "uds-cookie-consent-faux-close-btn")
-consent_banner.click()
+# Scroll down the page until the search-button is visible
+# otherwise ElementClickedInterceptionExeception occurs 
+
+src_btn_flag = page_to_scrape.find_element(By.XPATH, "//*[@id='search-button']")
+page_to_scrape.execute_script("arguments[0].scrollIntoView();", src_btn_flag)
 time.sleep(3)
 
 # RADIO BUTTON TO SEARCH FOR ALL CLASSES  
@@ -69,7 +78,7 @@ time.sleep(3)
 
 # CLICK ON SEARCH BUTTON
 search_button = page_to_scrape.find_element(By.ID, "search-button")
-search_button.click()
+search_button.click() 
 time.sleep(3)
 
 #################### PAGE WITH WANTED DATA ####################
