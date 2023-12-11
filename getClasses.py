@@ -9,9 +9,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import (ElementNotVisibleException,ElementNotSelectableException)
 from selenium.webdriver.chrome.options import Options
 import time
-# NEW 
+
+# added some more imports
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
 
 ##### NEW ADDITIONS TO SELENIUM #####:
 
@@ -21,11 +24,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 # Selenium v4.6.0 includes built in Manager. No need to use a third party library
 # (WebDriverManager). 
 
-
 ###########################################
-page_to_scrape = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
+# headless mode (makes browser window not visible to the user)
+options = Options()
+options.add_argument("--headless=new")
+
+page_to_scrape = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options = options)
 page_to_scrape.get("https://catalog.apps.asu.edu/catalog/classes")
-time.sleep(5)
 
 page_to_scrape.maximize_window() # maximize window
 
@@ -35,7 +41,7 @@ wait = WebDriverWait(page_to_scrape, timeout = 12, poll_frequency= 3, ignored_ex
 # efficient way of waiting for web page to load.
 #wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
 
-# Cookie banner 
+# clear Cookie banner 
 consent_banner = page_to_scrape.find_element(By.CLASS_NAME, "uds-cookie-consent-faux-close-btn")
 consent_banner.click()
 time.sleep(3)
@@ -59,14 +65,12 @@ time.sleep(1)
 # Types input into the text fields
 subject.send_keys("CSE")
 time.sleep(1)
-number.send_keys("310")
+number.send_keys("340")
 time.sleep(1)
 keyword_search.send_keys("")
 time.sleep(1)
 
 # Scroll down the page until the search-button is visible
-# otherwise ElementClickedInterceptionExeception occurs 
-
 src_btn_flag = page_to_scrape.find_element(By.XPATH, "//*[@id='search-button']")
 page_to_scrape.execute_script("arguments[0].scrollIntoView();", src_btn_flag)
 time.sleep(3)
